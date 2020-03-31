@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container } from 'reactstrap';
 
-import { Header, ConsoleLogger } from 'components'; //Footer, HelpFAB
+import { Header } from 'components'; //Footer, HelpFAB, ConsoleLogger
 import styled from 'styled-components';
 
 import {
@@ -36,7 +36,7 @@ const StandardTemplate = ({
         </Container>
       </main>
     </div>
-    <ConsoleLogger/>
+    {/*<ConsoleLogger/>*/}
     {/*<AppFooter>
       <Footer />
     </AppFooter>*/}

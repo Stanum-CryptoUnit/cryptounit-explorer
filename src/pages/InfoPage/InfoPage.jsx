@@ -8,7 +8,7 @@ import { StandardTemplate } from 'templates';
 import Headblock from './components/Headblock';
 import BlockchainInfo from './components/BlockchainInfo';
 import LastIrreversibleBlockInfo from './components/LastIrreversibleBlockInfo';
-import WelcomePopup from './components/WelcomePopup';
+// import WelcomePopup from './components/WelcomePopup';
 import { CardStyled, CardHeaderStyled, PageTitleDivStyled} from 'styled'; //, InputStyled
 // import styled from 'styled-components';
 
@@ -107,16 +107,6 @@ class InfoPage extends Component {
           </Row>
 
         </div>
-        {
-          this.state.modalIsOpen ? (
-            <WelcomePopup
-              toggle={()=>{
-                this.toggleModal();
-              }}
-              open={this.state.modalIsOpen}
-              />)
-              : null
-        }
       </StandardTemplate>
     );
   }
