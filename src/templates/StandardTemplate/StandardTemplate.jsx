@@ -1,12 +1,12 @@
 import React from 'react';
 import { Container } from 'reactstrap';
 
-import { Header, Footer, HelpFAB, ConsoleLogger } from 'components';
+import { Header, ConsoleLogger } from 'components'; //Footer, HelpFAB
 import styled from 'styled-components';
 
 import {
   AppHeader,
-  AppFooter
+  // AppFooter
 } from '@coreui/react';
 
 const StandardTemplateStyled = styled.div`
@@ -29,7 +29,7 @@ const StandardTemplate = ({
       <Header />
     </AppHeader>
     <div className="app-body">
-      <HelpFAB />
+      {/*<HelpFAB />*/}
       <main className="main">
         <Container fluid>
           {children}
@@ -37,9 +37,9 @@ const StandardTemplate = ({
       </main>
     </div>
     <ConsoleLogger/>
-    <AppFooter>
+    {/*<AppFooter>
       <Footer />
-    </AppFooter>
+    </AppFooter>*/}
   </StandardTemplateStyled>
 )
 

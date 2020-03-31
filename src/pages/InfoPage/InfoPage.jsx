@@ -9,12 +9,12 @@ import Headblock from './components/Headblock';
 import BlockchainInfo from './components/BlockchainInfo';
 import LastIrreversibleBlockInfo from './components/LastIrreversibleBlockInfo';
 import WelcomePopup from './components/WelcomePopup';
-import { CardStyled, CardHeaderStyled, PageTitleDivStyled, InputStyled} from 'styled';
-import styled from 'styled-components';
+import { CardStyled, CardHeaderStyled, PageTitleDivStyled} from 'styled'; //, InputStyled
+// import styled from 'styled-components';
 
-const FirstCardStyled = styled(CardStyled)`
-  border-top: solid 2px #1173a4;
-`
+// const FirstCardStyled = styled(CardStyled)`
+//   border-top: solid 2px #1173a4;
+// `
 
 class InfoPage extends Component {
 
@@ -49,7 +49,7 @@ class InfoPage extends Component {
             </Col>
           </Row>
 
-          <Row>
+{/*          <Row>
             <Col xs="12">
               <FirstCardStyled>
                 <CardHeaderStyled>
@@ -64,20 +64,8 @@ class InfoPage extends Component {
                 </CardBody>
               </FirstCardStyled>
             </Col>
-          </Row>
+          </Row>*/}
 
-          <Row>
-            <Col xs="12">
-              <CardStyled>
-                <CardHeaderStyled>
-                  Blockchain Information
-                </CardHeaderStyled>
-                <CardBody>
-                  <BlockchainInfo />
-                </CardBody>
-              </CardStyled>
-            </Col>
-          </Row>
 
           <Row>
             <Col xs="12">
@@ -104,6 +92,20 @@ class InfoPage extends Component {
               </CardStyled>
             </Col>
           </Row>
+
+          <Row>
+            <Col xs="12">
+              <CardStyled>
+                <CardHeaderStyled>
+                  Blockchain Information
+                </CardHeaderStyled>
+                <CardBody>
+                  <BlockchainInfo />
+                </CardBody>
+              </CardStyled>
+            </Col>
+          </Row>
+
         </div>
         {
           this.state.modalIsOpen ? (

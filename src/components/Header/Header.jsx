@@ -64,7 +64,7 @@ const NavWrapper = styled.div`
     }
   }
   :nth-child(4){
-    flex: 3 0 0;
+    // flex: 3 0 0;
     .px-3{
       flex: none;
       padding-right: 0 !important;
@@ -185,11 +185,13 @@ const Header = (props) => {
           <WrappedLink to={`/`}>
             <Nav className="nav-items d-md-down-none" navbar>
               <LogoWrapper>
-                <StyledEosioLogoSmallSVG/>
-                <AppName>
+                <img style={{width: "70px"}} src="/logo.png" alt="CryptoUnit" />
+                {/*<StyledEosioLogoSmallSVG/>*/}
+                {/*<AppName>
+
                   <div>EOSIO Labs<sub>TM</sub></div>
                   <div>EOSIO Explorer</div>
-                </AppName>
+                </AppName>*/}
               </LogoWrapper>
             </Nav>
           </WrappedLink>
@@ -218,7 +220,7 @@ const Header = (props) => {
           </NavStyled>
         </NavWrapper>
         <NavWrapper></NavWrapper>
-        <NavWrapper>
+       {/* <NavWrapper>
           <NavHead>INTERACT</NavHead>
           <NavStyled className="nav-items d-md-down-none" navbar>
             <NavItem className="px-3">
@@ -231,7 +233,7 @@ const Header = (props) => {
               <Link to={`/push-action`} className={`nav-link ${pathname === `/push-action` || pathname === `/push-action/` ? `active` : ``}`}>PUSH ACTIONS</Link>
             </NavItem>
           </NavStyled>
-        </NavWrapper>
+        </NavWrapper>*/}
         <NavWrapperRow>
           <VerticalLine>&nbsp;</VerticalLine>
         </NavWrapperRow>

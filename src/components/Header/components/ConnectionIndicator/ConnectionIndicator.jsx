@@ -62,17 +62,17 @@ const ConnectionIndicator = (props) => {
       <StyledDiv>
         <Indicator status={connectionIndicator.status.lastblockinfoStatus}>&nbsp;</Indicator>
         <StyledInner>
-          <StyledName>Nodeos</StyledName>
-          <StyledBlockNum>{lastblockinfoNum ? lastblockinfoNum : ` - `}</StyledBlockNum>
+          <StyledName>Head block</StyledName>
+          <StyledBlockNum>{lastblockinfoNum ? lastblockinfoNum : ` - `} / {headblockNum ? headblockNum : ` - `} </StyledBlockNum>
         </StyledInner>
       </StyledDiv>
-      <StyledDiv>
+      {/*<StyledDiv>
         <Indicator status={connectionIndicator.status.headblockStatus}>&nbsp;</Indicator>
         <StyledInner>
           <StyledName>PostgresDB</StyledName>
           <StyledBlockNum>{headblockNum ? headblockNum : ` - `}</StyledBlockNum>
         </StyledInner>
-      </StyledDiv>
+      </StyledDiv>*/}
     </StyledWrapper>
   );
 }
