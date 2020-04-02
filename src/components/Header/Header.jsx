@@ -163,6 +163,7 @@ const WrappedLink = styled(Link)`
   }
 `
 const NavStyled = styled(Nav)`
+  max-width: 100%;
   padding-top: 10px;
 `
 
