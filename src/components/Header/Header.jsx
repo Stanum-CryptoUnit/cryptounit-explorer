@@ -64,7 +64,7 @@ const NavWrapper = styled.div`
     }
   }
   :nth-child(4){
-    // flex: 3 0 0;
+    flex: 3 0 0;
     .px-3{
       flex: none;
       padding-right: 0 !important;
@@ -212,10 +212,10 @@ const Header = (props) => {
            {/* <NavItem className="px-3">
               <Link to={`/action-list`} className={`nav-link ${pathname === `/action-list` || pathname === `/action-list/` || matchPath(pathname, 'action') ? `active` : ``}`}>ACTIONS</Link>
             </NavItem>*/}
-            {/*<NavItem className="px-3">
+            <NavItem className="px-3">
               <Link to={`/account`} className={`nav-link ${pathname === `/account` || matchPath(pathname, 'account') ? `active` : ``}`}>ACCOUNTS</Link>
             </NavItem>
-            <NavItem className="px-3 last-item">
+            {/*<NavItem className="px-3 last-item">
               <Link to={`/contract`} className={`nav-link ${pathname === `/contract` || matchPath(pathname, 'contract') ? `active` : ``}`}>SMART CONTRACT</Link>
             </NavItem>*/}
           </NavStyled>
