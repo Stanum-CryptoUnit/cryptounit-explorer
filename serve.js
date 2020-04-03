@@ -35,6 +35,10 @@ if ( process.env.MODE !== 'development'){
 
 app.use("/api/postgres", postgres);
 
+app.get('*', (req,res) =>{
+  res.sendFile(path.join(__dirname+'/build/index.html'));
+});
+
 // catch-all route to /page-not-found/index.html defined last to handle page not found error
 app.get('/*', (req, res) => {
   res.sendFile(__dirname + '/build/page-not-found/index.html');
