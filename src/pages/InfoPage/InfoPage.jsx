@@ -93,18 +93,18 @@ class InfoPage extends Component {
             </Col>
           </Row>
 
-          <Row>
-            <Col xs="12">
-              <CardStyled>
-                <CardHeaderStyled>
-                  Blockchain Information
-                </CardHeaderStyled>
-                <CardBody>
-                  <BlockchainInfo />
-                </CardBody>
-              </CardStyled>
-            </Col>
-          </Row>
+          {/*<Row>*/}
+          {/*  <Col xs="12">*/}
+          {/*    <CardStyled>*/}
+          {/*      <CardHeaderStyled>*/}
+          {/*        Blockchain Information*/}
+          {/*      </CardHeaderStyled>*/}
+          {/*      <CardBody>*/}
+          {/*        <BlockchainInfo />*/}
+          {/*      </CardBody>*/}
+          {/*    </CardStyled>*/}
+          {/*  </Col>*/}
+          {/*</Row>*/}
 
         </div>
       </StandardTemplate>
