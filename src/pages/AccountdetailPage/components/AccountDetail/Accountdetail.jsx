@@ -1,15 +1,15 @@
 import React, {Component, useEffect, useState} from 'react';
 
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { fetchStart, paramsSet } from './AccountdetailReducer';
+import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
+import {fetchStart, paramsSet} from './AccountdetailReducer';
 import pathNameConsumer from 'helpers/pathname-consumer';
-import { push } from 'connected-react-router'
+import {push} from 'connected-react-router'
 
-import { CardBody, Col, Row, Form, FormGroup } from 'reactstrap';
+import {CardBody, Col, Form, FormGroup, Row} from 'reactstrap';
 import styled from 'styled-components';
-import { CodeViewer, LoadingSpinner } from 'components';
-import { CardStyled, CardHeaderStyled, ButtonPrimary, InputStyled, ErrorDivStyled } from 'styled';
+import {CodeViewer, LoadingSpinner} from 'components';
+import {ButtonPrimary, CardHeaderStyled, CardStyled, ErrorDivStyled, InputStyled} from 'styled';
 
 
 const FirstCardStyled = styled(CardStyled)`
@@ -31,7 +31,8 @@ const CustomErrorDiv = styled(ErrorDivStyled)`
 
 class AccountBalance extends Component {
   state = {
-    balances:{USDU:"0.0000 USDU"}
+    balances:{USDU:"0.0000 USDU"},
+    total: ""
   };
 
 
@@ -50,7 +51,23 @@ class AccountBalance extends Component {
     });
   }
 
+  getStats(symbol) {
+    window.$.ajax({
+      url: window._env_.NODE_PATH + "/v1/chain/get_currency_stats",
+      method: "POST",
+      data: JSON.stringify({
+        "code": "eosio.token",
+        "account": "reserve",
+        "symbol": symbol
+      }),
+      success: (r) => {
+        this.setState({total: r.CRU.supply});
+      }
+    });
+  }
+
   componentWillMount() {
+    this.getStats("CRU");
     this.getBalance("CRU");
     this.getBalance("UNTB");
   }
@@ -60,6 +77,8 @@ class AccountBalance extends Component {
         <div>
           {Object.keys(this.state.balances).map((key)=>{
             return  <FormGroup key={key} row>
+              <Col sm={2}>Total Supply:</Col>
+              <Col sm={10} className="hashText">{this.state.total}</Col>
               <Col sm={2}>{key}:</Col>
               <Col sm={10} className="hashText">
                 {this.state.balances[key]}
