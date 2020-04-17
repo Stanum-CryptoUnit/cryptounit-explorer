@@ -42,7 +42,7 @@ class AccountBalance extends Component {
       method: "POST",
       data: JSON.stringify({
         "code": "eosio.token",
-        "account": "reserve",
+        "account": this.props.accountName,
         "symbol": symbol
       }),
       success: (r) => {
@@ -223,7 +223,7 @@ const Accountdetail = (props) => {
                          <CardStyled>
                            <CardHeaderStyled>Balances</CardHeaderStyled>
                            <CardBody>
-                             <AccountBalance/>
+                             <AccountBalance accountName={params.account_name}/>
                            </CardBody>
                          </CardStyled>
                        </Col>
