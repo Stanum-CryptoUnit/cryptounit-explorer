@@ -75,10 +75,12 @@ class AccountBalance extends Component {
   render() {
     return (
         <div>
-          {Object.keys(this.state.balances).map((key)=>{
-            return  <FormGroup key={key} row>
-              <Col sm={2}>Total Supply:</Col>
-              <Col sm={10} className="hashText">{this.state.total}</Col>
+          <FormGroup row>
+            <Col sm={2}>Total Supply:</Col>
+            <Col sm={10} className="hashText">{this.state.total}</Col>
+          </FormGroup>
+          {Object.keys(this.state.balances).map((key) => {
+            return <FormGroup key={key} row>
               <Col sm={2}>{key}:</Col>
               <Col sm={10} className="hashText">
                 {this.state.balances[key]}
