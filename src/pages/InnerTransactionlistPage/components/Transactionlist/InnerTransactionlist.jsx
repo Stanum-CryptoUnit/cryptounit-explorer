@@ -83,7 +83,7 @@ class InnerTransactionlist extends Component {
                     }
                   }
                   onChange={evt => {
-                    setInputValue(evt.target.value)
+                    // setInputValue(evt.target.value)
                   }}/>
                 <ButtonPrimary
                   onClick={evt => {
