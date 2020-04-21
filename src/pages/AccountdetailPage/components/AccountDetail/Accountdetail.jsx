@@ -113,7 +113,6 @@ class AccountHistory extends Component {
     });
   }
 
-
   componentWillMount() {
     this.getHistory();
   }
@@ -149,6 +148,73 @@ class AccountHistory extends Component {
                     <td>{tr.username}</td>
                     <td>{tr.amount}</td>
                     <td>{tr.algorithm}</td>
+                    <td>{tr.created}</td>
+                  </tr>)}
+              </tbody>
+            </TableStyled>
+          </Col>
+        </Row>
+      </div>
+    );
+  }
+}
+
+class LockHistory extends Component {
+  state = {
+    locks: [],
+  };
+
+  getLocks() {
+    window.$.ajax({
+      url: window._env_.NODE_PATH + "/v1/chain/get_table_rows",
+      method: "POST",
+      data: JSON.stringify({
+        json: true,
+        "code": "tokenlock",
+        "scope": this.props.accountName,
+        table: 'locks',
+      }),
+      success: (r) => {
+        this.setState({history: [...this.state.locks, ...r.rows]});
+      }
+    });
+  }
+
+  componentWillMount() {
+    this.getLocks();
+  }
+
+  render() {
+    const payload = this.state.locks;
+    return (
+      <div>
+        <Row>
+          <Col xs="12">
+            <TableStyled borderless>
+              <thead>
+              <tr>
+                <th width="5%">ID</th>
+                <th>Amount</th>
+                <th>Withdrawed</th>
+                <th>Available</th>
+                <th width="5%">Alg</th>
+                <th>Distribution</th>
+                <th>Created</th>
+              </tr>
+              </thead>
+              <tbody className="hashText">
+              {(payload.length < 1)
+                ? <tr>
+                  <td colSpan="7" className="text-center">No transactions found</td>
+                </tr>
+                : payload.map((tr, index) =>
+                  <tr key={index}>
+                    <td>{tr.id}</td>
+                    <td>{tr.amount}</td>
+                    <td>{tr.withdrawed}</td>
+                    <td>{tr.available}</td>
+                    <td>{tr.algorithm}</td>
+                    <td>{tr.last_distribution_at}</td>
                     <td>{tr.created}</td>
                   </tr>)}
               </tbody>
@@ -308,6 +374,16 @@ const Accountdetail = (props) => {
                         <CardHeaderStyled>Transaction History</CardHeaderStyled>
                         <CardBody>
                           <AccountHistory accountName={params.account_name}/>
+                        </CardBody>
+                      </CardStyled>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col sm="12">
+                      <CardStyled>
+                        <CardHeaderStyled>Locks</CardHeaderStyled>
+                        <CardBody>
+                          <LockHistory accountName={params.account_name}/>
                         </CardBody>
                       </CardStyled>
                     </Col>
