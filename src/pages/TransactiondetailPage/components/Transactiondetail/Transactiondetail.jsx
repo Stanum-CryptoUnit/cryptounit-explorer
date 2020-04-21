@@ -130,7 +130,7 @@ const Transactiondetail = (props) => {
                       <CardBody>
                         <ErrorDivStyled>No Transaction found with Transaction ID {params.id} <br/><br/>
                           <ButtonPrimary
-                            onClick={evt=> props.push(`/transaction-list`)}>Back
+                            onClick={evt=> props.push(`/global-transaction-list`)}>Back
                           </ButtonPrimary>           
                         </ErrorDivStyled>           
                       </CardBody>

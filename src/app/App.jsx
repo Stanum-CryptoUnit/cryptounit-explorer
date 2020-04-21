@@ -28,6 +28,7 @@ import { fetchStart as permissionFetchStart} from 'reducers/permission';
 import { pollingStart as headblock_pollingStart} from 'reducers/headblock';
 import { pollingStart as lastblockinfo_pollingStart } from 'reducers/lastblockinfo';
 import { fetchStart as blockchaininfo_fetchstart } from 'pages/InfoPage/components/BlockchainInfo/BlockchainInfoReducer';
+import InnerTransactionlistPage from "../pages/InnerTransactionlistPage/InnerTransactionlistPage";
 
 const prodTagManagerArgs = {
   gtmId: process.env.REACT_APP_PROD_GTM_ID
@@ -64,6 +65,8 @@ class App extends Component {
           <WillRoute exact path="/block-list" component={ BlocklistPage }/>
           <WillRoute exact path="/block/:id" component={ BlockdetailPage }/>
           <WillRoute exact path="/transaction-list" component={ TransactionlistPage }/>
+          <WillRoute exact path="/global-transaction-list" component={ TransactionlistPage }/>
+          <WillRoute exact path="/inner-transaction-list" component={ InnerTransactionlistPage }/>
           <WillRoute exact path="/transaction/:id" component={ TransactiondetailPage }/>
           <WillRoute exact path="/action-list" component={ ActionlistPage }/>
           <WillRoute exact path="/action/:block_num/:id" component={ ActiondetailPage }/>

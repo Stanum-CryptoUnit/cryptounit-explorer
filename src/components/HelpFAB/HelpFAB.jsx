@@ -11,7 +11,7 @@ const getUrl = (pageName) =>{
       return "//github.com/EOSIO/eosio-explorer/tree/master/docs/pages/block-list-page.md";         
     case 'block':
       return "//github.com/EOSIO/eosio-explorer/blob/master/docs/pages/detail-pages/block-detail-page.md";
-    case 'transaction-list':
+    case 'global-transaction-list':
       return "//github.com/EOSIO/eosio-explorer/blob/master/docs/pages/transaction-list-page.md";
     case 'transaction':
       return "//github.com/EOSIO/eosio-explorer/blob/master/docs/pages/detail-pages/transaction-detail-page.md";  
