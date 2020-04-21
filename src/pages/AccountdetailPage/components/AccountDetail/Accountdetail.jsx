@@ -108,7 +108,7 @@ class AccountHistory extends Component {
         table: 'history',
       }),
       success: (r) => {
-        this.setState({history: [...this.state.history, r.rows]});
+        this.setState({history: [...this.state.history, ...r.rows]});
       }
     });
   }
