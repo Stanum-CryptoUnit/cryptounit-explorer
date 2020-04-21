@@ -105,6 +105,7 @@ class AccountHistory extends Component {
         json: true,
         "code": "tokenlock",
         "scope": this.props.accountName,
+        reverse: true,
         table: 'history',
       }),
       success: (r) => {
@@ -171,6 +172,7 @@ class LockHistory extends Component {
       data: JSON.stringify({
         json: true,
         "code": "tokenlock",
+        reverse: true,
         "scope": this.props.accountName,
         table: 'locks',
       }),

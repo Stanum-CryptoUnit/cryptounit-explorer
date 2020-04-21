@@ -1,1 +1,6 @@
-export default import('./InnerTransactionlistPage');
+import Loadable from "react-loadable";
+
+export default Loadable({
+  loader: () => import('./InnerTransactionlistPage'),
+  loading: () => false
+});

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Col, Row } from 'reactstrap';
 
 import { StandardTemplate } from 'templates';
-import InnerTransactionlist from './components/Transactionlist';
+import InnerTransactionlist  from './components/InnerTransactionlist';
 import { PageTitleDivStyled } from 'styled';
 
 class InnerTransactionlistPage extends Component {
@@ -19,7 +19,7 @@ class InnerTransactionlistPage extends Component {
           </Row>
           <Row>
             <Col sm="12">
-            <InnerTransactionlist/>
+              <InnerTransactionlist/>
             </Col>
           </Row>
         </div>

@@ -1,11 +1,10 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, {Component} from 'react';
 
 
 import {CardBody, CardTitle, Col, Row} from 'reactstrap';
 import styled from 'styled-components';
 import isObjectEmpty from 'helpers/is-object-empty';
-import {LimitSelectDropdown, LoadingSpinner} from 'components';
-import {ButtonPrimary, CardHeaderStyled, CardStyled, ErrorButton, InputStyled, TableStyled} from 'styled';
+import {ButtonPrimary, CardHeaderStyled, CardStyled, InputStyled, TableStyled} from 'styled';
 
 
 const FirstCardStyled = styled(CardStyled)`
@@ -22,13 +21,15 @@ const SearchInputStyled = styled(InputStyled)`
 `
 
 class InnerTransactionlist extends Component {
+  timerId = null;
+
   state = {
     payload: [],
     error: null,
     isPolling: false,
   };
 
-  getHistory() {
+  getHistory(refresh) {
     this.setState({isPolling: true});
     window.$.ajax({
       url: window._env_.NODE_PATH + "/v1/chain/get_table_rows",
@@ -37,10 +38,11 @@ class InnerTransactionlist extends Component {
         json: true,
         "code": "tokenlock",
         "scope": "tokenlock",
+        reverse: true,
         table: 'history',
       }),
       success: (r) => {
-        this.setState({payload: [...this.state.history, ...r.rows]}, () => {
+        this.setState({payload: r.rows}, () => {
           this.setState({isPolling: false});
         });
       },
@@ -52,16 +54,21 @@ class InnerTransactionlist extends Component {
     });
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timerId);
+  }
+
   componentWillMount() {
     this.getHistory();
+    this.timerId = setInterval(() => this.getHistory(true), 2000);
   }
 
 
   render() {
 
-    const [inputValue, setInputValue] = {inputValue:"", setInputValue:""};
+//    const [inputValue, setInputValue] = {inputValue:"", setInputValue:""};
 
-    let {payload = [], error, isPolling} = this.state;
+    let {payload = [], error, isPolling, inputValue} = this.state;
 
     return (
       <div className="Transactionlist">
