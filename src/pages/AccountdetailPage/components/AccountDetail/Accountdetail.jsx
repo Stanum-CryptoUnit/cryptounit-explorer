@@ -175,7 +175,7 @@ class LockHistory extends Component {
         table: 'locks',
       }),
       success: (r) => {
-        this.setState({history: [...this.state.locks, ...r.rows]});
+        this.setState({locks: [...this.state.locks, ...r.rows]});
       }
     });
   }
