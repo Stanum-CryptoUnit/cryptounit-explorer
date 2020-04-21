@@ -128,12 +128,12 @@ class AccountHistory extends Component {
               <thead>
               <tr>
                 <th width="5%">ID</th>
-                <th width="15%">Lock ID</th>
-                <th width="15%">Lock Parent ID</th>
+                <th width="5%">LockID</th>
+                <th width="5%">ParentID</th>
                 <th width="20%">Username</th>
                 <th width="25%">Amount</th>
-                <th width="5%">Algorithm</th>
-                <th width="15%">Created</th>
+                <th width="5%">Alg</th>
+                <th width="30%">Created</th>
               </tr>
               </thead>
               <tbody className="hashText">
