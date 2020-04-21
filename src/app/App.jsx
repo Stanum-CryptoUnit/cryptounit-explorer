@@ -28,7 +28,7 @@ import { fetchStart as permissionFetchStart} from 'reducers/permission';
 import { pollingStart as headblock_pollingStart} from 'reducers/headblock';
 import { pollingStart as lastblockinfo_pollingStart } from 'reducers/lastblockinfo';
 import { fetchStart as blockchaininfo_fetchstart } from 'pages/InfoPage/components/BlockchainInfo/BlockchainInfoReducer';
-import InnerTransactionlistPage from "../pages/InnerTransactionlistPage/InnerTransactionlistPage";
+import InnerTransactionlistPage from "pages/InnerTransactionlistPage";
 
 const prodTagManagerArgs = {
   gtmId: process.env.REACT_APP_PROD_GTM_ID

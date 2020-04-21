@@ -59,7 +59,7 @@ class InnerTransactionlist extends Component {
 
   render() {
 
-    const [inputValue, setInputValue] = useState("");
+    const [inputValue, setInputValue] = {inputValue:"", setInputValue:""};
 
     let {payload = [], error, isPolling} = this.state;
 
