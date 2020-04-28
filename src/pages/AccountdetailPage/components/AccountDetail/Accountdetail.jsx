@@ -190,7 +190,7 @@ class AccountHistory extends Component {
           <Col xs="12" className="text-right">
             <Button disabled={this.state.page <= 0} outline color="primary"
                     onClick={this.handlePrev}>Back</Button>{' '}
-            <Button disabled={payload.length <= 0} outline color="primary" onClick={this.handleNext}>Next</Button>
+            <Button disabled={payload.length < this.state.limit} outline color="primary" onClick={this.handleNext}>Next</Button>
           </Col>
         </Row>
       </div>
