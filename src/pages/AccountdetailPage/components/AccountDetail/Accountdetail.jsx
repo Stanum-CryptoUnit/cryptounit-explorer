@@ -117,6 +117,12 @@ class AccountHistory extends Component {
       lower_bound = this.state.lastIndex - this.state.page * this.state.limit - this.state.limit;
       upper_bound = this.state.lastIndex - this.state.page * this.state.limit;
     }
+    if (lower_bound < 0){
+      lower_bound = 0;
+    }
+    if (upper_bound < 0){
+      upper_bound = 0;
+    }
 
     window.$.ajax({
       url: window._env_.NODE_PATH + "/v1/chain/get_table_rows",
