@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 
 
-import {CardBody, CardTitle, Col, Row} from 'reactstrap';
+import {Button, CardBody, CardTitle, Col, Row} from 'reactstrap';
 import styled from 'styled-components';
 import isObjectEmpty from 'helpers/is-object-empty';
-import {ButtonPrimary, CardHeaderStyled, CardStyled, InputStyled, TableStyled} from 'styled';
+import {CardHeaderStyled, CardStyled, InputStyled, TableStyled} from 'styled';
 
 
 const FirstCardStyled = styled(CardStyled)`
@@ -27,22 +27,51 @@ class InnerTransactionlist extends Component {
     payload: [],
     error: null,
     isPolling: false,
+    limit: 10,
+    page: 0
   };
 
-  getHistory(refresh) {
+  handleNext = () => {
+    if (this.state.payload.length === 0) return;
+    this.setState({page: this.state.page + 1}, this.getHistory)
+  }
+
+  handlePrev = () => {
+    if (this.state.page === 0) return;
+    this.setState({page: this.state.page - 1}, this.getHistory)
+  }
+
+
+  getHistory(isTimer) {
+    if (isTimer && this.state.page > 0) return;
+
+    let lower_bound = null;
+    let upper_bound = null;
+    if (this.state.page > 0 && this.state.lastIndex) {
+      lower_bound = this.state.lastIndex - this.state.page * this.state.limit - this.state.limit;
+      upper_bound = this.state.lastIndex - this.state.page * this.state.limit;
+    }
+
     this.setState({isPolling: true});
     window.$.ajax({
       url: window._env_.NODE_PATH + "/v1/chain/get_table_rows",
       method: "POST",
       data: JSON.stringify({
         json: true,
-        "code": "tokenlock",
-        "scope": "tokenlock",
+        code: "tokenlock",
+        scope: "tokenlock",
         reverse: true,
         table: 'history',
+        limit: this.state.limit,
+        lower_bound: lower_bound,
+        upper_bound: upper_bound
       }),
       success: (r) => {
-        this.setState({payload: r.rows}, () => {
+        const st = {payload: r.rows};
+        if (this.state.page === 0 && r.rows.length > 0) {
+          st.lastIndex = r.rows[0].id;
+        }
+        this.setState(st, () => {
           this.setState({isPolling: false});
         });
       },
@@ -76,30 +105,30 @@ class InnerTransactionlist extends Component {
           <CardHeaderStyled>Inner Transaction List</CardHeaderStyled>
           <CardBody>
             <CardTitle>
-              <DivFlexStyled>
-                <SearchInputStyled
-                  placeholder="Transaction ID"
-                  value={inputValue}
-                  onKeyDown={
-                    evt => {
-                      // if (evt.key === 'Enter') {
-                      //   setInputValue("");
-                      //   if (inputValue !== "")
-                      //     props.push('/transaction/' + inputValue)
-                      // }
-                    }
-                  }
-                  onChange={evt => {
-                    // setInputValue(evt.target.value)
-                  }}/>
-                <ButtonPrimary
-                  onClick={evt => {
-                    // setInputValue("");
-                    // if (inputValue !== "")
-                    //   props.push('/transaction/' + inputValue)
-                  }}>
-                  SEARCH</ButtonPrimary>
-              </DivFlexStyled>
+              {/*<DivFlexStyled>*/}
+              {/*  <SearchInputStyled*/}
+              {/*    placeholder="Transaction ID"*/}
+              {/*    value={inputValue}*/}
+              {/*    onKeyDown={*/}
+              {/*      evt => {*/}
+              {/*        // if (evt.key === 'Enter') {*/}
+              {/*        //   setInputValue("");*/}
+              {/*        //   if (inputValue !== "")*/}
+              {/*        //     props.push('/transaction/' + inputValue)*/}
+              {/*        // }*/}
+              {/*      }*/}
+              {/*    }*/}
+              {/*    onChange={evt => {*/}
+              {/*      // setInputValue(evt.target.value)*/}
+              {/*    }}/>*/}
+              {/*  <ButtonPrimary*/}
+              {/*    onClick={evt => {*/}
+              {/*      // setInputValue("");*/}
+              {/*      // if (inputValue !== "")*/}
+              {/*      //   props.push('/transaction/' + inputValue)*/}
+              {/*    }}>*/}
+              {/*    SEARCH</ButtonPrimary>*/}
+              {/*</DivFlexStyled>*/}
             </CardTitle>
 
             <div>{error
@@ -139,6 +168,11 @@ class InnerTransactionlist extends Component {
                         </tr>)}
                     </tbody>
                   </TableStyled>
+                </Col>
+                <Col xs="12" className="text-right">
+                  <Button disabled={this.state.page <= 0} outline color="primary"
+                          onClick={this.handlePrev}>Back</Button>{' '}
+                  <Button disabled={payload.length <= 0} outline color="primary" onClick={this.handleNext}>Next</Button>
                 </Col>
               </Row>
             }

@@ -6,7 +6,7 @@ import {fetchStart, paramsSet} from './AccountdetailReducer';
 import pathNameConsumer from 'helpers/pathname-consumer';
 import {push} from 'connected-react-router'
 
-import {CardBody, Col, Form, FormGroup, Row} from 'reactstrap';
+import {Button, CardBody, Col, Form, FormGroup, Row} from 'reactstrap';
 import styled from 'styled-components';
 import {CodeViewer, LoadingSpinner} from 'components';
 import {ButtonPrimary, CardHeaderStyled, CardStyled, ErrorDivStyled, InputStyled, TableStyled} from 'styled';
@@ -45,7 +45,7 @@ class AccountBalance extends Component {
         "symbol": symbol
       }),
       success: (r) => {
-        this.setState({balances: {...this.state.balances, [symbol]: r}});
+        this.setState({balances: {...this.state.balances, [symbol]: r ? r : `0.0000 ${symbol}`}});
       }
     });
   }
@@ -95,27 +95,54 @@ class AccountBalance extends Component {
 class AccountHistory extends Component {
   state = {
     history: [],
+    limit: 10,
+    page: 0
   };
 
+
+  handleNext = () => {
+    if (this.state.history.length === 0) return;
+    this.setState({page: this.state.page + 1}, this.getHistory)
+  }
+
+  handlePrev = () => {
+    if (this.state.page === 0) return;
+    this.setState({page: this.state.page - 1}, this.getHistory)
+  }
+
   getHistory() {
+    let lower_bound = null;
+    let upper_bound = null;
+    if (this.state.page > 0 && this.state.lastIndex) {
+      lower_bound = this.state.lastIndex - this.state.page * this.state.limit - this.state.limit;
+      upper_bound = this.state.lastIndex - this.state.page * this.state.limit;
+    }
+
     window.$.ajax({
       url: window._env_.NODE_PATH + "/v1/chain/get_table_rows",
       method: "POST",
       data: JSON.stringify({
         json: true,
-        "code": "tokenlock",
-        "scope": this.props.accountName,
+        code: "tokenlock",
+        scope: this.props.accountName,
         reverse: true,
         table: 'history',
+        limit: this.state.limit,
+        lower_bound: lower_bound,
+        upper_bound: upper_bound
       }),
       success: (r) => {
-        this.setState({history: [...this.state.history, ...r.rows]});
+        const st = {history: r.rows};
+        if (this.state.page === 0 && r.rows.length > 0) {
+          st.lastIndex = r.rows[0].id;
+        }
+        this.setState(st);
       }
     });
   }
 
   componentWillMount() {
-    this.getHistory();
+    this.getHistory(0, 9, 10);
   }
 
   render() {
@@ -153,6 +180,11 @@ class AccountHistory extends Component {
                   </tr>)}
               </tbody>
             </TableStyled>
+          </Col>
+          <Col xs="12" className="text-right">
+            <Button disabled={this.state.page <= 0} outline color="primary"
+                    onClick={this.handlePrev}>Back</Button>{' '}
+            <Button disabled={payload.length <= 0} outline color="primary" onClick={this.handleNext}>Next</Button>
           </Col>
         </Row>
       </div>
