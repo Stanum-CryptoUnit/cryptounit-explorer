@@ -34,6 +34,33 @@ class AccountBalance extends Component {
     total: ""
   };
 
+  getLockedHistory(cb) {
+    let list = [];
+    const get = () => {
+      window.$.ajax({
+        url: window._env_.NODE_PATH + "/v1/chain/get_table_rows",
+        method: "POST",
+        data: JSON.stringify({
+          json: true,
+          code: "tokenlock",
+          reverse: true,
+          scope: this.props.accountName,
+          table: 'locks',
+          limit: 2,
+          upper_bound: list.length > 0 ? list[list.length - 1].id - 1 : null
+        }),
+        success: (data) => {
+          list = list.concat(data.rows);
+          if (data.more) {
+            get();
+          } else {
+            cb && cb(list)
+          }
+        }
+      });
+    }
+    get();
+  }
 
   getBalance(symbol) {
     window.$.ajax({
@@ -45,9 +72,26 @@ class AccountBalance extends Component {
         "symbol": symbol
       }),
       success: (r) => {
-        this.setState({balances: {...this.state.balances, [symbol]: r ? r : `0.0000 ${symbol}`}});
+        console.log(symbol);
+        if (symbol === "CRU") {
+          this.getLockedHistory((list) => {
+            let stats = list.reduce((sum, value) => {
+                sum.amount += Number.parseInt(value.amount.split(" ")[0])
+                sum.available += Number.parseInt(value.available.split(" ")[0])
+                sum.withdrawed += Number.parseInt(value.withdrawed.split(" ")[0])
+                return sum
+              }, {available: 0, amount: 0, withdrawed: 0}
+            );
+            let initialBalance = r ? r : "0 CRU";
+            const balance = Number.parseInt((initialBalance.length > 0 ? initialBalance[0].split(" ")[0] : 0)) + stats.available;
+            this.setState({balances: {...this.state.balances, [symbol]: (`${balance} ${symbol}`)}});
+          });
+        } else {
+          this.setState({balances: {...this.state.balances, [symbol]: r && Number.parseInt(r) > 0? r : `0.0000 ${symbol}`}});
+        }
       }
     });
+
   }
 
   getStats(symbol) {
@@ -111,17 +155,17 @@ class AccountHistory extends Component {
   }
 
   getHistory() {
-    let lower_bound = null;
-    let upper_bound = null;
+    let lowerBound = null;
+    let upperBound = null;
     if (this.state.page > 0 && this.state.lastIndex) {
-      lower_bound = this.state.lastIndex - this.state.page * this.state.limit - this.state.limit;
-      upper_bound = this.state.lastIndex - this.state.page * this.state.limit;
+      lowerBound = this.state.lastIndex - this.state.page * this.state.limit - this.state.limit;
+      upperBound = this.state.lastIndex - this.state.page * this.state.limit;
     }
-    if (lower_bound < 0){
-      lower_bound = 0;
+    if (lowerBound < 0) {
+      lowerBound = 0;
     }
-    if (upper_bound < 0){
-      upper_bound = 0;
+    if (upperBound < 0) {
+      upperBound = 0;
     }
 
     window.$.ajax({
@@ -134,8 +178,8 @@ class AccountHistory extends Component {
         reverse: true,
         table: 'history',
         limit: this.state.limit,
-        lower_bound: lower_bound,
-        upper_bound: upper_bound
+        lower_bound: lowerBound,
+        upper_bound: upperBound
       }),
       success: (r) => {
         const st = {history: r.rows};
@@ -190,7 +234,8 @@ class AccountHistory extends Component {
           <Col xs="12" className="text-right">
             <Button disabled={this.state.page <= 0} outline color="primary"
                     onClick={this.handlePrev}>Back</Button>{' '}
-            <Button disabled={payload.length < this.state.limit} outline color="primary" onClick={this.handleNext}>Next</Button>
+            <Button disabled={payload.length < this.state.limit} outline color="primary"
+                    onClick={this.handleNext}>Next</Button>
           </Col>
         </Row>
       </div>
@@ -201,7 +246,27 @@ class AccountHistory extends Component {
 class LockHistory extends Component {
   state = {
     locks: [],
+    limit: 10,
+    more: false,
+    upperBound: null,
+    loverBound: null
   };
+
+  handleNext = () => {
+    let ub = null;
+    if (this.state.locks.length > 0) {
+      ub = this.state.locks[this.state.locks.length - 1].id - 1;
+    }
+    this.setState({upperBound: ub, loverBound: null}, this.getLocks)
+  }
+
+  handlePrev = () => {
+    let ub = null;
+    if (this.state.locks.length > 0) {
+      ub = this.state.locks[0].id + 1;
+    }
+    this.setState({upperBound: null, loverBound: ub}, this.getLocks)
+  }
 
   getLocks() {
     window.$.ajax({
@@ -209,13 +274,19 @@ class LockHistory extends Component {
       method: "POST",
       data: JSON.stringify({
         json: true,
-        "code": "tokenlock",
+        code: "tokenlock",
         reverse: true,
-        "scope": this.props.accountName,
+        scope: this.props.accountName,
         table: 'locks',
+        limit: this.state.limit,
+        upper_bound: this.state.upperBound
       }),
       success: (r) => {
-        this.setState({locks: [...this.state.locks, ...r.rows]});
+        const st = {locks: r.rows, more: r.more};
+        if (this.state.page === 0 && r.rows.length > 0) {
+          st.lastIndex = r.rows[0].id;
+        }
+        this.setState(st);
       }
     });
   }
@@ -233,11 +304,11 @@ class LockHistory extends Component {
             <TableStyled borderless>
               <thead>
               <tr>
-                <th width="5%">ID</th>
+                <th>ID</th>
                 <th>Amount</th>
                 <th>Withdrawed</th>
                 <th>Available</th>
-                <th width="5%">Alg</th>
+                <th>Alg</th>
                 <th>Distribution</th>
                 <th>Created</th>
               </tr>
@@ -259,6 +330,11 @@ class LockHistory extends Component {
                   </tr>)}
               </tbody>
             </TableStyled>
+          </Col>
+          <Col xs="12" className="text-right">
+            <Button disabled={this.state.page <= 0} outline color="primary"
+                    onClick={this.handlePrev}>Back</Button>{' '}
+            <Button disabled={!this.state.more} outline color="primary" onClick={this.handleNext}>Next</Button>
           </Col>
         </Row>
       </div>

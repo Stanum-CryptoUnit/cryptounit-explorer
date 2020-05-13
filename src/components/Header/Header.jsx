@@ -209,9 +209,9 @@ const Header = (props) => {
             <NavItem className="px-3">
               <Link to={`/global-transaction-list`} className={`nav-link ${pathname === `/global-transaction-list` || pathname === `/global-transaction-list/` || matchPath(pathname, 'global-transaction') ? `active` : ``}`}>GLOBAL TRANSACTIONS</Link>
             </NavItem>
-            <NavItem className="px-3">
-              <Link to={`/inner-transaction-list`} className={`nav-link ${pathname === `/inner-transaction-list` || pathname === `/inner-transaction-list/` || matchPath(pathname, 'inner-transaction') ? `active` : ``}`}>INNER TRANSACTIONS</Link>
-            </NavItem>
+            {/*<NavItem className="px-3">*/}
+            {/*  <Link to={`/inner-transaction-list`} className={`nav-link ${pathname === `/inner-transaction-list` || pathname === `/inner-transaction-list/` || matchPath(pathname, 'inner-transaction') ? `active` : ``}`}>INNER TRANSACTIONS</Link>*/}
+            {/*</NavItem>*/}
            {/* <NavItem className="px-3">
               <Link to={`/action-list`} className={`nav-link ${pathname === `/action-list` || pathname === `/action-list/` || matchPath(pathname, 'action') ? `active` : ``}`}>ACTIONS</Link>
             </NavItem>*/}
