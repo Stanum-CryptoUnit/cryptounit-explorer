@@ -70,6 +70,34 @@ class AccountBalance extends Component {
     get();
   }
 
+  getHistory(cb) {
+    let list = [];
+    const get = () => {
+      window.$.ajax({
+        url: window._env_.NODE_PATH + "/v1/chain/get_table_rows",
+        method: "POST",
+        data: JSON.stringify({
+          json: true,
+          code: "tokenlock",
+          reverse: true,
+          scope: this.props.accountName,
+          table: 'history',
+          limit: 2,
+          upper_bound: list.length > 0 ? list[list.length - 1].id - 1 : null
+        }),
+        success: (data) => {
+          list = list.concat(data.rows);
+          if (data.more) {
+            get();
+          } else {
+            cb && cb(list)
+          }
+        }
+      });
+    }
+    get();
+  }
+
   getDebts(cb) {
     window.$.ajax({
       url: window._env_.NODE_PATH + "/v1/chain/get_table_rows",
@@ -97,18 +125,34 @@ class AccountBalance extends Component {
       }),
       success: (r) => {
         if (symbol === "CRU") {
-          this.getLockedHistory((list) => {
-            this.getDebts((debts) => {
-              let stats = list.reduce((sum, value) => {
-                  sum.amount += parseAmount(value.amount)
-                  sum.available += parseAmount(value.available)
-                  sum.withdrawed += parseAmount(value.withdrawed)
-                  return sum
-                }, {available: 0, amount: 0, withdrawed: 0}
-              );
+          this.getLockedHistory((lockList) => {
+            const lockedStats = lockList.reduce((sum, value) => {
+                sum.amount += parseAmount(value.amount)
+                sum.available += parseAmount(value.available)
+                sum.withdrawed += parseAmount(value.withdrawed)
+                return sum
+              }, {available: 0, amount: 0, withdrawed: 0}
+            );
+
+            this.getHistory((historyList) => {
+              const debts = historyList
+                // .filter((h) => h.lock_parent_id === 0 && parseAmount(h.amount) < 0)
+                // .map((h) => parseAmount(h.amount))
+                // .reduce((s, a) => s + a, 0);
+              .reduce((s, h) => {
+                let sum = 0;
+                const amount = parseAmount(h.amount);
+                if (amount < 0 || h.algorithm === 0){
+                  sum += amount;
+                }
+                return s + sum;
+              }, 0)
+
+              console.log(historyList)
+
               let initialBalance = r && r.length > 0 ? r[0] : "0 CRU";
-              const balance = parseAmount(initialBalance) + stats.amount - parseAmount(debts);
-              console.log("Balance", initialBalance, "+", stats.amount, "-", parseAmount(debts), "=", balance)
+              const balance = /*parseAmount(initialBalance) +*/ lockedStats.amount + parseAmount(debts);
+              console.log("Balance:", "(amount)", lockedStats.amount, "+ (debts)", parseAmount(debts), "=", balance)
               this.setState({balances: {...this.state.balances, [symbol]: (`${balance} ${symbol}`)}});
             });
           });
