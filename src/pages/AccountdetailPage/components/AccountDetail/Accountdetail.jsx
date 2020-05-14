@@ -27,6 +27,14 @@ const CustomErrorDiv = styled(ErrorDivStyled)`
   padding: 30px 0 0 0;
 `
 
+const parseAmount = (amount) => {
+  const am = parseFloat(amount);
+  if (!am || isNaN(am)) {
+    return 0;
+  } else {
+    return am;
+  }
+}
 
 class AccountBalance extends Component {
   state = {
@@ -62,6 +70,22 @@ class AccountBalance extends Component {
     get();
   }
 
+  getDebts(cb) {
+    window.$.ajax({
+      url: window._env_.NODE_PATH + "/v1/chain/get_table_rows",
+      method: "POST",
+      data: JSON.stringify({
+        json: true,
+        code: "tokenlock",
+        scope: this.props.accountName,
+        table: 'debts',
+      }),
+      success: (r) => {
+        cb && cb(r.length > 0 ? r[0].amount : 0);
+      }
+    });
+  }
+
   getBalance(symbol) {
     window.$.ajax({
       url: window._env_.NODE_PATH + "/v1/chain/get_currency_balance",
@@ -72,22 +96,29 @@ class AccountBalance extends Component {
         "symbol": symbol
       }),
       success: (r) => {
-        console.log(symbol);
         if (symbol === "CRU") {
           this.getLockedHistory((list) => {
-            let stats = list.reduce((sum, value) => {
-                sum.amount += Number.parseInt(value.amount.split(" ")[0])
-                sum.available += Number.parseInt(value.available.split(" ")[0])
-                sum.withdrawed += Number.parseInt(value.withdrawed.split(" ")[0])
-                return sum
-              }, {available: 0, amount: 0, withdrawed: 0}
-            );
-            let initialBalance = r ? r : "0 CRU";
-            const balance = Number.parseInt((initialBalance.length > 0 ? initialBalance[0].split(" ")[0] : 0)) + stats.available;
-            this.setState({balances: {...this.state.balances, [symbol]: (`${balance} ${symbol}`)}});
+            this.getDebts((debts) => {
+              let stats = list.reduce((sum, value) => {
+                  sum.amount += parseAmount(value.amount)
+                  sum.available += parseAmount(value.available)
+                  sum.withdrawed += parseAmount(value.withdrawed)
+                  return sum
+                }, {available: 0, amount: 0, withdrawed: 0}
+              );
+              let initialBalance = r && r.length > 0 ? r[0] : "0 CRU";
+              const balance = parseAmount(initialBalance) + stats.amount - parseAmount(debts);
+              console.log("Balance", initialBalance, "+", stats.amount, "-", parseAmount(debts), "=", balance)
+              this.setState({balances: {...this.state.balances, [symbol]: (`${balance} ${symbol}`)}});
+            });
           });
         } else {
-          this.setState({balances: {...this.state.balances, [symbol]: r && Number.parseInt(r) > 0? r : `0.0000 ${symbol}`}});
+          this.setState({
+            balances: {
+              ...this.state.balances,
+              [symbol]: r && Number.parseInt(r) > 0 ? r : `0.0000 ${symbol}`
+            }
+          });
         }
       }
     });

@@ -28,7 +28,7 @@ export const connectFulfilled = payload => ({ type: CONNECT_FULFILLED, payload }
 const connectEpic = ( action$, state$ ) => action$.pipe(
   ofType(CONNECT_START),
   mergeMap(action =>{   
-    let query = paramsToQuery({port: process.env.REACT_APP_POSTGRES_DB_PORT });
+    let query = paramsToQuery({host:process.env.REACT_APP_POSTGRES_DB_HOST || "localhost", port: process.env.REACT_APP_POSTGRES_DB_PORT });
     return apiPostgres(`connectToDB${query}`).pipe(
       map(res => {
         return connectFulfilled(action.nodeos)}),
