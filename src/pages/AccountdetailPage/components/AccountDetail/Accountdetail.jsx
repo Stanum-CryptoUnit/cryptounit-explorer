@@ -38,7 +38,7 @@ const parseAmount = (amount) => {
 
 class AccountBalance extends Component {
   state = {
-    balances: {USDU: "0.0000 USDU", CRU: "0.0000 CRU", UNTB: "0.0000 UNTB",},
+    balances: {USDU: "0.0000 USDU", CRU: "Loading...", UNTB: "0.0000 UNTB",},
     total: ""
   };
 
@@ -136,7 +136,7 @@ class AccountBalance extends Component {
 
             this.getHistory((historyList) => {
               const debts = historyList
-                // .filter((h) => h.lock_parent_id === 0 && parseAmount(h.amount) < 0)
+                 .filter((h) => h.lock_parent_id === 0 && parseAmount(h.amount) < 0)
                 // .map((h) => parseAmount(h.amount))
                 // .reduce((s, a) => s + a, 0);
               .reduce((s, h) => {
@@ -148,11 +148,11 @@ class AccountBalance extends Component {
                 return s + sum;
               }, 0)
 
-              console.log(historyList)
+              //console.log(historyList)
 
               let initialBalance = r && r.length > 0 ? r[0] : "0 CRU";
-              const balance = /*parseAmount(initialBalance) +*/ lockedStats.amount + parseAmount(debts);
-              console.log("Balance:", "(amount)", lockedStats.amount, "+ (debts)", parseAmount(debts), "=", balance)
+              const balance = /*parseAmount(initialBalance) +*/  parseAmount(initialBalance) + lockedStats.amount + parseAmount(debts);
+              console.log("Balance: ", "(initialBalance)", initialBalance ,"(amount)", lockedStats.amount, "+ (debts)", parseAmount(debts), "=", balance)
               this.setState({balances: {...this.state.balances, [symbol]: (`${balance} ${symbol}`)}});
             });
           });
